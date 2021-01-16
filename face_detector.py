@@ -51,21 +51,20 @@ while True:
     # Find all the faces and face encodings in the current frame of video
     face_locations = face_recognition.face_locations(rgb_frame)
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
-    name = ""
-    face_names = []
+    found_face = False
+
     for face_encoding in face_encodings:
         # See if the face is a match
         match = face_recognition.compare_faces(known_faces, face_encoding, tolerance=0.50)
-        name = "Unknown"
-        if match[0]:
-            name = "Rohan"
+
+        if any(match):
+            found_face = True
         #     break
         # elif match[1]:
         #     name = "Matthews"
         # elif match[2]:
         #     name = "Kenny"
 
-        face_names.append(name)
 
     # # Label the results
     # for (top, right, bottom, left), name in zip(face_locations, face_names):
