@@ -13,9 +13,9 @@ currFile = ""
 def popupmsg(msg):
     popup = Tk()
     popup.wm_title("!")
-    label = ttk.Label(popup, text=msg, font=NORM_FONT)
+    label = Label(popup, text=msg, font="Times 12")
     label.pack(side="top", fill="x", pady=10)
-    B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
+    B1 = Button(popup, text="Okay", command = popup.destroy)
     B1.pack()
     popup.mainloop()
 
@@ -33,10 +33,10 @@ def getFile():
         screen.delete(badText)
         root.after(2, frontPage)
     else:
-        screen.create_text( 282.5, 250, text=filename, font="Times 12", fill="blue")
-        raw = r'{}'.format(filename)
         try:
+            raw = r'{}'.format(filename)
             x = crop(raw)
+            screen.create_text( 282.5, 250, text=filename, font="Times 12", fill="blue")
         except Exception as e:
             popupmsg(e)
             
