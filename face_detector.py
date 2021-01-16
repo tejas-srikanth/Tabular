@@ -72,7 +72,7 @@ try:
                 # call trigger here
                 print("i see a face")
 
-        # # Label the results
+        # Label the results
         # for (top, right, bottom, left), name in zip(face_locations, face_names):
         #     if not name:
         #         continue
