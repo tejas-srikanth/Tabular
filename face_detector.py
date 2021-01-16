@@ -4,6 +4,7 @@ import sys
 import pickle
 from time import sleep
 import os
+import imagezmq
 
 # This is a demo of running face recognition on a video file and saving the results to a new video file.
 
@@ -12,16 +13,18 @@ import os
 # input_video = cv2.VideoCapture("input.mp4")
 # length = int(input_video.get(cv2.CAP_PROP_FRAME_COUNT))
 
+image_hub = imagezmq.ImageHub()
+
 source = 0
 if len(sys.argv) > 1:
     source = sys.argv[1]
 
-cap = cv2.VideoCapture(source)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 375)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 250)
-hasFrame, frame2 = cap.read()
-frame = cv2.flip( frame2, 0 )
-frame_count = 0
+# cap = cv2.VideoCapture(source)
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 375)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 250)
+# hasFrame, frame2 = cap.read()
+# frame = cv2.flip( frame2, 0 )
+# frame_count = 0
 
 # Initialize some variables
 face_locations = []
@@ -32,6 +35,10 @@ frame_number = 0
 with open(os.path.join(os.path.dirname(__file__), "encoding.dat"), 'rb') as f:
     known_faces = pickle.load(f)
 while True:
+    print('h')
+    pi_name, rgb_frame = image_hub.recv_image()
+    print("huh")
+    ''' THE FOLLOWING COULD BE DONE ON THE PI
     hasFrame, frame2 = cap.read()
     frame = cv2.flip( frame2, 1 )
 
@@ -39,6 +46,7 @@ while True:
 
     # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
     rgb_frame = frame[:, :, ::-1]
+    '''
 
     # Find all the faces and face encodings in the current frame of video
     face_locations = face_recognition.face_locations(rgb_frame)
@@ -76,7 +84,6 @@ while True:
 
     for name in face_names: print(name)
 
-    k = cv2.waitKey(10)
-    if k == 27:
-        break
-
+    k = cv2.waitKey(1)
+    image_hub.send_reply(b'OK')
+    break
