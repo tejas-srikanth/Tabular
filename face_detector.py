@@ -5,8 +5,18 @@ import pickle
 from time import sleep
 import os
 import imagezmq
+from infi.systray import SysTrayIcon
 
-# This is a demo of running face recognition on a video file and saving the results to a new video file.
+
+def on_quit_callback(systray):
+    try:
+        sys.exit(0)
+    except SystemExit:
+        os._exit(0)
+
+menu_options = ()
+systray = SysTrayIcon(os.path.join(os.path.dirname(__file__), "sketch.ico"), "Facial Recognition", menu_options, on_quit=on_quit_callback)
+systray.start()
 
 
 # # Open the input movie file
@@ -19,70 +29,68 @@ source = 0
 if len(sys.argv) > 1:
     source = sys.argv[1]
 
-# cap = cv2.VideoCapture(source)
-# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 375)
-# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 250)
-# hasFrame, frame2 = cap.read()
-# frame = cv2.flip( frame2, 0 )
-# frame_count = 0
+cap = cv2.VideoCapture(source)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 375)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 250)
+hasFrame, frame2 = cap.read()
+frame = cv2.flip( frame2, 0 )
+frame_count = 0
 
 # Initialize some variables
 face_locations = []
 face_encodings = []
-face_names = []
 frame_number = 0
 
 with open(os.path.join(os.path.dirname(__file__), "encoding.dat"), 'rb') as f:
     known_faces = pickle.load(f)
-while True:
-    print('h')
-    pi_name, rgb_frame = image_hub.recv_image()
-    print("huh")
-    ''' THE FOLLOWING COULD BE DONE ON THE PI
-    hasFrame, frame2 = cap.read()
-    frame = cv2.flip( frame2, 1 )
+try:
+    while True:
 
-    frame_count += 1
+        pi_name, rgb_frame = image_hub.recv_image() # currently bricks the thread, do not run
 
-    # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
-    rgb_frame = frame[:, :, ::-1]
-    '''
+        #THE FOLLOWING COULD BE DONE ON THE PI
+        hasFrame, frame2 = cap.read()
+        frame = cv2.flip( frame2, 1 )
 
-    # Find all the faces and face encodings in the current frame of video
-    face_locations = face_recognition.face_locations(rgb_frame)
-    face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
-    found_face = False
+        frame_count += 1
 
-    for face_encoding in face_encodings:
-        # See if the face is a match
-        match = face_recognition.compare_faces(known_faces, face_encoding, tolerance=0.50)
-
-        if any(match):
-            found_face = True
-        #     break
-        # elif match[1]:
-        #     name = "Matthews"
-        # elif match[2]:
-        #     name = "Kenny"
-
-
-    # # Label the results
-    # for (top, right, bottom, left), name in zip(face_locations, face_names):
-    #     if not name:
-    #         continue
-    #     # Draw a box around the face
-    #     cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-
-    #     # Draw a label with a name below the face
-    #     cv2.rectangle(frame, (left, bottom - 25), (right, bottom), (0, 0, 255), cv2.FILLED)
-    #     font = cv2.FONT_HERSHEY_DUPLEX
-    #     cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
-
+        # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
+        rgb_frame = frame[:, :, ::-1]
         
-    # cv2.imshow("yee", frame)
 
-    for name in face_names: print(name)
+        # Find all the faces and face encodings in the current frame of video
+        face_locations = face_recognition.face_locations(rgb_frame)
+        face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+        found_face = False
 
-    k = cv2.waitKey(1)
-    image_hub.send_reply(b'OK')
-    break
+        for face_encoding in face_encodings:
+            # See if the face is a match
+            match = face_recognition.compare_faces(known_faces, face_encoding, tolerance=0.50)
+
+            if any(match):
+                found_face = True
+                # call trigger here
+                print("i see a face")
+
+        # # Label the results
+        # for (top, right, bottom, left), name in zip(face_locations, face_names):
+        #     if not name:
+        #         continue
+        #     # Draw a box around the face
+        #     cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+
+        #     # Draw a label with a name below the face
+        #     cv2.rectangle(frame, (left, bottom - 25), (right, bottom), (0, 0, 255), cv2.FILLED)
+        #     font = cv2.FONT_HERSHEY_DUPLEX
+        #     cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
+
+            
+        # cv2.imshow("yee", frame)
+
+        # image_hub.send_reply(b'OK')
+
+except KeyboardInterrupt:
+    try:
+        sys.exit(0)
+    except SystemExit:
+        os._exit(0)
