@@ -46,7 +46,7 @@ with open(os.path.join(os.path.dirname(__file__), "encoding.dat"), 'rb') as f:
 try:
     while True:
 
-        # pi_name, rgb_frame = image_hub.recv_image() # currently bricks the thread, do not run
+        pi_name, rgb_frame = image_hub.recv_image() # currently bricks the thread, do not run
 
         #THE FOLLOWING COULD BE DONE ON THE PI
         hasFrame, frame2 = cap.read()
@@ -70,6 +70,7 @@ try:
             if any(match):
                 found_face = True
                 # call trigger here
+                print("i see a face")
 
         # # Label the results
         # for (top, right, bottom, left), name in zip(face_locations, face_names):
@@ -85,6 +86,8 @@ try:
 
             
         # cv2.imshow("yee", frame)
+
+        # image_hub.send_reply(b'OK')
 
 except KeyboardInterrupt:
     try:
