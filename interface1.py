@@ -63,9 +63,7 @@ def getFile():
             screen.create_text( 282.5, 250, text=filename, font="Times 12", fill="blue")
         except Exception as e:
             popupmsg(e)
-            
-        
-        
+              
 
 def frontPage():
     global screen, currFile, root
