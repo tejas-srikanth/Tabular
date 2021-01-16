@@ -3,12 +3,35 @@ from tkinter.filedialog import askopenfilename
 from time import *
 from random import *
 from face_cropper import *
+screen, currFile, root = "","",""
 
-root = Tk()
-screen = Canvas(root, width=600, height=600, background="white")
-screen.pack()
+def main():
+    global screen, currFile, root
+    if root != "":
+        if root.state() == "normal":
+            root.focus()
+        else:
+            init_root()
+    else:
+        init_root()
 
-currFile = ""
+def on_closing():
+    global root
+    root.destroy()
+    root = ""
+            
+def init_root():
+    global screen, currFile, root
+    root = Tk()
+    screen = Canvas(root, width=600, height=600, background="white")
+    screen.pack()
+    root.resizable(0,0)
+    currFile = ""
+    root.after(0, frontPage)
+    root.protocol("WM_DELETE_WINDOW", on_closing)
+    screen.pack()
+    screen.focus_set()
+    root.mainloop()
 
 def popupmsg(msg):
     popup = Tk()
@@ -20,6 +43,7 @@ def popupmsg(msg):
     popup.mainloop()
 
 def getFile():
+    global screen, currFile, root
     filename = askopenfilename()
     if filename.endswith("png") or filename.endswith("jpg"):
         currFile = filename
@@ -44,15 +68,12 @@ def getFile():
         
 
 def frontPage():
+    global screen, currFile, root
     chooseFile = Button(root, text="Choose an image of your face", command=getFile)
     chooseFile.pack()
     chooseFile.place(x=200, y=200)
 
-root.after(0, frontPage)
 
-screen.pack()
-screen.focus_set()
-root.mainloop()
 
 
 

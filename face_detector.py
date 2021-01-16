@@ -6,7 +6,7 @@ from time import sleep
 import os
 import imagezmq
 from infi.systray import SysTrayIcon
-
+import interface1
 
 def on_quit_callback(systray):
     try:
@@ -14,7 +14,10 @@ def on_quit_callback(systray):
     except SystemExit:
         os._exit(0)
 
-menu_options = ()
+def open_settings(systray):
+    interface1.main()
+
+menu_options = (("Settings", None, open_settings),)
 systray = SysTrayIcon(os.path.join(os.path.dirname(__file__), "sketch.ico"), "Facial Recognition", menu_options, on_quit=on_quit_callback)
 systray.start()
 
