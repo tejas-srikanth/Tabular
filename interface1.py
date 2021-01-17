@@ -2,9 +2,9 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from time import *
 from random import *
+import os
 from face_cropper import *
 from pynput.keyboard import Listener, Key, Controller
-
 
 WIDTH, HEIGHT = 400, 600
 FONT = ("Segoe UI Bold", 14)
@@ -15,12 +15,10 @@ COLOUR_PRIMARY = "white"
 COLOUR_SECONDARY = "#444"
 COLOUR_ACCENT = "#ecb100"
 
-
 screen, currFile, root = "", "", ""
 recorded = [Key.alt_l, Key.tab]
 recordedText = ""
 keyboard = Controller()
-
 
 def main():
     global screen, currFile, root
@@ -32,17 +30,16 @@ def main():
     else:
         init_root()
 
-
 def on_closing():
     global root
     root.destroy()
     root = ""
 
-
 def init_root():
     global screen, currFile, root
     root = Tk()
     root.title("Customize Tabular")
+    root.iconbitmap(os.path.join(os.path.dirname(__file__), "sketch.ico"))
     screen = Canvas(root, width=WIDTH, height=HEIGHT,
                     background=COLOUR_BACKGROUND)
     screen.pack()
@@ -62,7 +59,6 @@ def popupmsg(msg):
     B1 = Button(popup, text="Okay", command=popup.destroy)
     B1.pack()
     popup.mainloop()
-
 
 def getFile():
     global screen, currFile, root
@@ -98,7 +94,6 @@ def log_keystroke(key):
 
     recorded.append(key)
 
-
 def recordKeybind():
     global recorded, recordedText, keyboard
     recorded = []
@@ -114,7 +109,6 @@ def recordKeybind():
     recordedText = screen.create_text(
         40, 470, text=temp, font=FONT_SECONDARY, fill=COLOUR_ACCENT, anchor=NW,
         width=320)
-
 
 def frontPage():
     global screen, currFile, root, recordedText
