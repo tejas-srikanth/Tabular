@@ -70,9 +70,3 @@ def frontPage():
     chooseFile = Button(root, text="Choose an image of your face", command=getFile)
     chooseFile.pack()
     chooseFile.place(x=200, y=200)
-
-
-
-
-
-

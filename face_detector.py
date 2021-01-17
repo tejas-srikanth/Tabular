@@ -7,6 +7,7 @@ import os
 import imagezmq
 from infi.systray import SysTrayIcon
 import interface1
+import keyboard
 
 def on_quit_callback(systray):
     try:
@@ -50,7 +51,7 @@ with open(os.path.join(os.path.dirname(__file__), "encoding.dat"), 'rb') as f:
 while True:
     pi_name, rgb_frame = image_hub.recv_image() # currently bricks the thread, do not run
     image_hub.send_reply(b'OK')
-    print("Frame received")
+
     #THE FOLLOWING COULD BE DONE ON THE PI
     # hasFrame, frame2 = cap.read()
     # frame = cv2.flip( frame2, 1 )
@@ -66,17 +67,17 @@ while True:
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
     found_face = False
 
-    if len(face_encodings) > 0:
-        print("i c face")
+    # if len(face_encodings) > 0:
+    #     print("i c face")
 
-    # for face_encoding in face_encodings:
-    #     # See if the face is a match
-    #     match = face_recognition.compare_faces(known_faces, face_encoding, tolerance=0.50)
+    for face_encoding in face_encodings:
+        # See if the face is a match
+        match = face_recognition.compare_faces(known_faces, face_encoding, tolerance=0.50)
 
-    #     if any(match):
-    #         found_face = True
-    #         # call trigger here
-    #         print("i see a face")
+        if any(match):
+            found_face = True
+            # call trigger here
+            keyboard.press_and_release('alt+tab')
 
     # Label the results
     # for (top, right, bottom, left), name in zip(face_locations, face_names):
