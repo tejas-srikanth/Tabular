@@ -23,7 +23,7 @@ def open_settings(systray):
     interface1.main()
 
 menu_options = (("Settings", None, open_settings),)
-systray = SysTrayIcon(os.path.join(os.path.dirname(__file__), "sketch.ico"), "Facial Recognition", menu_options, on_quit=on_quit_callback)
+systray = SysTrayIcon(os.path.join(os.path.dirname(__file__), "sketch.ico"), "Tabular", menu_options, on_quit=on_quit_callback)
 systray.start()
 
 image_hub = imagezmq.ImageHub()
