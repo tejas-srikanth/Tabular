@@ -84,7 +84,11 @@ while True:
 
             # call trigger here
             if (previous_frames[-1] == False and previous_frames[-2] == False):
+
+                print("Face detected!")
+
                 for key in interface1.recorded:
+                    print(interface1.recorded)
                     keyboard.press(key)
                 for key in interface1.recorded:
                     keyboard.release(key)
