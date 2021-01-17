@@ -6,7 +6,7 @@ from face_cropper import *
 from pynput.keyboard import Listener, Key, Controller
 
 screen, currFile, root = "","",""
-recorded = ["alt_l", "tab"]
+recorded = [Key.alt_l, Key.tab]
 recordedText= ""
 keyboard = Controller()
 
