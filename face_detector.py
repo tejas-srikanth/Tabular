@@ -7,7 +7,11 @@ import os
 import imagezmq
 from infi.systray import SysTrayIcon
 import interface1
-import keyboard
+from pynput.keyboard import Controller, Key
+
+keyboard = Controller()
+found_face = False
+previous_frames = [False, False]
 
 def on_quit_callback(systray):
     try:
@@ -65,6 +69,7 @@ while True:
     #Find all the faces and face encodings in the current frame of video
     face_locations = face_recognition.face_locations(rgb_frame)
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+    previous_frames[-2], previous_frames[-1] = previous_frames[-1], found_face
     found_face = False
 
     # if len(face_encodings) > 0:
@@ -76,8 +81,13 @@ while True:
 
         if any(match):
             found_face = True
+
             # call trigger here
-            keyboard.press_and_release('alt+tab')
+            if (previous_frames[-1] == False and previous_frames[-2] == False):
+                for key in interface1.recorded:
+                    keyboard.press(key)
+                for key in interface1.recorded:
+                    keyboard.release(key)
 
     # Label the results
     # for (top, right, bottom, left), name in zip(face_locations, face_names):
