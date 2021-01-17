@@ -73,7 +73,7 @@ def frontPage():
     chooseFile.pack()
     chooseFile.place(x=200, y=200)
 
-
+main()
 
 
 
